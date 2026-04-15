@@ -13,7 +13,7 @@ interface UseTasksOptions {
 export function useTasks({ projectId }: UseTasksOptions) {
   const { data, error, isLoading, mutate } = useSWR<Task[]>(
     projectId ? `/projects/${projectId}/tasks` : null,
-    async (url) => {
+    async (url: string) => {
       const response = await apiClient.get(url)
       return response.data.data || []
     }

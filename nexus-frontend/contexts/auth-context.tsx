@@ -48,6 +48,19 @@ interface RegisterInput {
  */
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
+function getAuthErrorMessage(error: unknown, fallback: string): string {
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const responseError = error as { response?: { data?: { message?: unknown } } }
+    const message = responseError.response?.data?.message
+
+    if (typeof message === 'string') {
+      return message
+    }
+  }
+
+  return error instanceof Error && error.message ? error.message : fallback
+}
+
 /**
  * Authentication Provider Props
  */
@@ -90,10 +103,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const refreshToken = useCallback(async () => {
     try {
       const response = await apiClient.post('/auth/refresh')
-      const { accessToken: newToken, user: userData } = response.data.data
+      const { accessToken: newToken } = response.data.data
       
       setAccessToken(newToken)
-      setUser(userData)
       
       // Return the new token so setupTokenRefresh can use it
       return newToken
@@ -173,9 +185,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       // Setup automatic token refresh
       setupTokenRefresh()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login failed:', error)
-      throw new Error(error.response?.data?.message || 'Login failed')
+      throw new Error(getAuthErrorMessage(error, 'Login failed'))
     } finally {
       setIsLoading(false)
     }
@@ -195,9 +207,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       // Setup automatic token refresh
       setupTokenRefresh()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration failed:', error)
-      throw new Error(error.response?.data?.message || 'Registration failed')
+      throw new Error(getAuthErrorMessage(error, 'Registration failed'))
     } finally {
       setIsLoading(false)
     }
@@ -236,6 +248,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
         } catch (error) {
           console.error('Failed to fetch user profile:', error)
           clearAccessToken()
+        }
+      } else {
+        try {
+          // A full page reload clears the in-memory access token. Restore it
+          // from the httpOnly refresh-token cookie, then load the user profile.
+          const response = await apiClient.post('/auth/refresh')
+          const { accessToken } = response.data.data
+
+          setAccessToken(accessToken)
+
+          const profileResponse = await apiClient.get('/auth/me')
+          setUser(profileResponse.data.data)
+
+          setupTokenRefresh()
+        } catch {
+          clearAccessToken()
+          setUser(null)
         }
       }
       

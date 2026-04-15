@@ -3,7 +3,7 @@
 ## Prerequisites
 - Docker and Docker Compose installed
 - Node.js 18+ installed
-- Ports 3000 (frontend) and 5000 (backend) available
+- Ports 3000 (frontend) and 5001 (backend) available
 
 ## Step 1: Start Backend (NestJS API + PostgreSQL)
 
@@ -15,7 +15,7 @@ docker-compose up -d
 
 This will start:
 - PostgreSQL database on port 5432
-- NestJS API on port 5000
+- NestJS API on port 5001
 
 ### Option B: Local Development
 ```bash
@@ -36,12 +36,12 @@ npm run start:dev
 ```
 
 ### Verify Backend is Running
-Open http://localhost:5000/api/docs in your browser
+Open http://localhost:5001/api/docs in your browser
 You should see the Swagger API documentation.
 
 ### Test Backend Login
 ```bash
-curl -X POST http://localhost:5000/api/v1/auth/login \
+curl -X POST http://localhost:5001/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@nexus.dev","password":"Admin@123"}'
 ```

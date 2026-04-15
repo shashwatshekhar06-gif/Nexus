@@ -38,34 +38,42 @@ export function LoginForm({ onSubmit, isLoading: externalLoading }: LoginFormPro
     try {
       setApiError(null)
       await onSubmit(data)
-    } catch (error: any) {
-      setApiError(error.message || 'Login failed. Please try again.')
+    } catch (error: unknown) {
+      setApiError(error instanceof Error ? error.message : 'Login failed. Please try again.')
     }
   }
   
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4 w-full max-w-md">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="flex w-full flex-col items-center space-y-5">
       {apiError && (
         <ErrorMessage error={apiError} />
       )}
       
-      <Input
-        label="Email"
-        variant="email"
-        placeholder="you@example.com"
-        error={errors.email?.message}
-        disabled={isLoading}
-        {...register('email')}
-      />
+      <div className="w-72 max-w-full">
+        <Input
+          label="Email"
+          variant="email"
+          placeholder="you@example.com"
+          error={errors.email?.message}
+          disabled={isLoading}
+          maxWidth="w-full"
+          {...register('email')}
+        />
+        {errors.email && <p className="text-xs text-red-400 mt-1">{errors.email.message}</p>}
+      </div>
       
-      <Input
-        label="Password"
-        variant="password"
-        placeholder="Enter your password"
-        error={errors.password?.message}
-        disabled={isLoading}
-        {...register('password')}
-      />
+      <div className="w-72 max-w-full">
+        <Input
+          label="Password"
+          variant="password"
+          placeholder="Enter your password"
+          error={errors.password?.message}
+          disabled={isLoading}
+          maxWidth="w-full"
+          {...register('password')}
+        />
+        {errors.password && <p className="text-xs text-red-400 mt-1">{errors.password.message}</p>}
+      </div>
       
       <Button
         type="submit"
@@ -73,7 +81,7 @@ export function LoginForm({ onSubmit, isLoading: externalLoading }: LoginFormPro
         size="lg"
         isLoading={isLoading}
         disabled={isLoading}
-        className="w-full"
+        className="mt-2 w-72 max-w-full"
       >
         {isLoading ? 'Logging in...' : 'Log In'}
       </Button>

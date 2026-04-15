@@ -31,27 +31,33 @@ export function Header() {
   }
   
   return (
-    <header className="bg-[#0f0f10] border-b border-[rgba(255,255,255,0.06)] sticky top-0 z-40" style={{ height: '52px' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-        <div className="flex items-center justify-between h-full">
+    <header className="sticky top-0 z-40 border-b border-[rgba(255,255,255,0.05)] bg-[#0a0a0b] bg-opacity-80 backdrop-blur-md" style={{ height: '56px' }}>
+      <div
+        className="h-full w-full"
+        style={{
+          paddingLeft: '48px',
+          paddingRight: '48px',
+        }}
+      >
+        <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center">
           {/* Logo */}
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-white rounded-md flex items-center justify-center">
-              <span className="text-black font-bold text-sm">N</span>
+          <Link href="/dashboard" className="ml-2 flex flex-shrink-0 items-center gap-2.5">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">N</span>
             </div>
-            <span className="text-sm font-semibold text-white" style={{ fontFamily: 'Geist, sans-serif' }}>Nexus</span>
+            <span className="text-base font-semibold text-white" style={{ fontFamily: 'Geist, sans-serif' }}>Nexus</span>
           </Link>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden items-center justify-center gap-2 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-[13px] transition-colors duration-150 ${
+                className={`rounded-[6px] px-3 py-2 text-sm transition-colors duration-150 font-medium ${
                   isActiveLink(link.href)
-                    ? 'text-white'
-                    : 'text-[#888] hover:text-white'
+                    ? 'bg-white/[0.06] text-white'
+                    : 'text-[#999] hover:bg-white/[0.04] hover:text-white'
                 }`}
               >
                 {link.label}
@@ -60,16 +66,16 @@ export function Header() {
           </nav>
           
           {/* User Menu */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="mr-2 hidden items-center justify-end gap-4 md:flex">
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <p className="text-[13px] text-white">{user?.name}</p>
-                <p className="text-[11px] text-[#555]">{user?.email}</p>
+                <p className="text-sm font-medium text-white">{user?.name}</p>
+                <p className="text-xs text-[#666]">{user?.email}</p>
               </div>
-              <div className="w-px h-8 bg-[rgba(255,255,255,0.06)]"></div>
+              <div className="w-px h-6 bg-[rgba(255,255,255,0.1)]"></div>
               <button
                 onClick={handleLogout}
-                className="text-[13px] text-[#555] hover:text-white transition-colors duration-150"
+                className="rounded-[6px] border border-white/[0.08] px-3 py-1.5 text-sm font-medium text-[#d4d4d8] transition-colors duration-150 hover:border-white/[0.16] hover:bg-white/[0.04] hover:text-white"
               >
                 Logout
               </button>
@@ -79,7 +85,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-[#888] hover:text-white transition-colors"
+            className="justify-self-end p-2 text-[#888] transition-colors hover:text-white md:hidden"
             aria-label="Toggle menu"
           >
             <svg

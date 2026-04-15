@@ -40,4 +40,6 @@ export interface Task {
   assigneeId: string | null;
   createdAt: string;
   updatedAt: string;
+  project?: Pick<Project, 'id' | 'name'>;
+  assignee?: Pick<User, 'id' | 'name' | 'email'> | null;
 }

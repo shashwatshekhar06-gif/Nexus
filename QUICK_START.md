@@ -44,7 +44,7 @@ npm run dev
 
 ## Verify Backend is Running
 
-Open in browser: http://localhost:5000/api/docs
+Open in browser: http://localhost:5001/api/docs
 
 You should see the Swagger API documentation.
 

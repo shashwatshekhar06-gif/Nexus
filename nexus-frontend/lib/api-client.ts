@@ -31,9 +31,19 @@ const apiClient = axios.create({
  */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = getAccessToken()
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    // Login/register/refresh do not need the access token, but protected
+    // auth routes like /auth/me and /auth/logout still do.
+    const url = config.url || ''
+    const skipAuthHeader =
+      url.includes('/auth/login') ||
+      url.includes('/auth/register') ||
+      url.includes('/auth/refresh')
+
+    if (!skipAuthHeader) {
+      const token = getAccessToken()
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
     }
     return config
   },
@@ -55,7 +65,14 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config as RetryableAxiosRequestConfig
 
     // Check if error is 401 and we haven't already retried
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+    const isRefreshRequest = originalRequest?.url?.includes('/auth/refresh')
+
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isRefreshRequest
+    ) {
       // Mark request as retried to prevent infinite loops
       originalRequest._retry = true
 

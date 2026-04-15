@@ -132,3 +132,21 @@ a, button, input, textarea, select {
   background: var(--accent);
   color: white;
 }
+
+/* Dashboard navbar sizing */
+.dashboard-navbar-shell {
+  width: 98%;
+  margin-inline: auto;
+}
+
+.dashboard-navbar-content {
+  height: 100%;
+  width: 100%;
+  padding-inline: 24px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-navbar-content {
+    padding-inline: 32px;
+  }
+}

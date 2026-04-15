@@ -44,41 +44,50 @@ export function RegisterForm({ onSubmit, isLoading: externalLoading }: RegisterF
   }
   
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4 w-full max-w-md">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5 w-full">
       {apiError && (
         <ErrorMessage error={apiError} />
       )}
       
-      <Input
-        label="Email"
-        variant="email"
-        placeholder="you@example.com"
-        error={errors.email?.message}
-        disabled={isLoading}
-        {...register('email')}
-      />
+      <div>
+        <Input
+          label="Email"
+          variant="email"
+          placeholder="you@example.com"
+          error={errors.email?.message}
+          disabled={isLoading}
+          maxWidth="w-full"
+          {...register('email')}
+        />
+      </div>
       
-      <Input
-        label="Name"
-        variant="text"
-        placeholder="Your full name"
-        error={errors.name?.message}
-        disabled={isLoading}
-        {...register('name')}
-      />
+      <div>
+        <Input
+          label="Full Name"
+          variant="text"
+          placeholder="Your full name"
+          error={errors.name?.message}
+          disabled={isLoading}
+          maxWidth="w-full"
+          {...register('name')}
+        />
+      </div>
       
-      <Input
-        label="Password"
-        variant="password"
-        placeholder="Create a strong password"
-        error={errors.password?.message}
-        disabled={isLoading}
-        {...register('password')}
-      />
+      <div>
+        <Input
+          label="Password"
+          variant="password"
+          placeholder="Create a strong password"
+          error={errors.password?.message}
+          disabled={isLoading}
+          maxWidth="w-full"
+          {...register('password')}
+        />
+      </div>
       
       <div className="text-xs text-gray-400 space-y-1">
-        <p>Password must contain:</p>
-        <ul className="list-disc list-inside space-y-0.5 ml-2">
+        <p className="font-medium">Password requirements:</p>
+        <ul className="list-disc list-inside space-y-0.5 ml-1">
           <li>At least 8 characters</li>
           <li>One uppercase letter</li>
           <li>One lowercase letter</li>
@@ -93,7 +102,7 @@ export function RegisterForm({ onSubmit, isLoading: externalLoading }: RegisterF
         size="lg"
         isLoading={isLoading}
         disabled={isLoading}
-        className="w-full"
+        className="w-full mt-6"
       >
         {isLoading ? 'Creating account...' : 'Create Account'}
       </Button>

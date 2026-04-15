@@ -11,20 +11,21 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement |
   error?: string
   variant?: 'text' | 'email' | 'password' | 'textarea'
   rows?: number
+  maxWidth?: string
 }
 
 export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
-  ({ label, error, variant = 'text', className = '', rows = 4, id, ...props }, ref) => {
+  ({ label, error, variant = 'text', className = '', rows = 4, maxWidth = 'w-full', id, ...props }, ref) => {
     const generatedId = useId()
     const inputId = id || generatedId
     
     // Base styles
-    const baseStyles = 'w-full px-3 py-2 bg-[#111113] border rounded-[6px] text-white placeholder-[#444] text-[12px] transition-all duration-150 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed'
+    const baseStyles = `${maxWidth} px-4 py-2.5 bg-[#111113] border rounded-lg text-white placeholder-[#555] text-sm transition-all duration-150 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed`
     
     // Error styles
     const errorStyles = error 
       ? 'border-[#ef4444] focus:ring-[rgba(239,68,68,0.3)] focus:border-[#ef4444]' 
-      : 'border-[rgba(255,255,255,0.08)] focus:ring-[rgba(124,109,250,0.3)] focus:border-[rgba(124,109,250,0.3)]'
+      : 'border-[rgba(255,255,255,0.1)] focus:ring-[rgba(124,109,250,0.3)] focus:border-[rgba(124,109,250,0.3)]'
     
     const combinedClassName = `${baseStyles} ${errorStyles} ${className}`
     
@@ -33,7 +34,7 @@ export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, In
         {label && (
           <label 
             htmlFor={inputId}
-            className="block text-[12px] font-medium text-[#888]"
+            className="block text-[12px] font-medium text-white"
           >
             {label}
           </label>

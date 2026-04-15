@@ -201,4 +201,162 @@ export class TasksService {
       where: { id: taskId },
     });
   }
+
+  /**
+   * Get all tasks by a specific user ID
+   * Returns tasks assigned to the user
+   */
+  async findTasksByUserId(userId: string, page = 1, limit = 20) {
+    // Verify the user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [tasks, total] = await this.prisma.$transaction([
+      this.prisma.task.findMany({
+        where: {
+          assigneeId: userId,
+        },
+        skip,
+        take: limit,
+        include: {
+          project: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.task.count({
+        where: {
+          assigneeId: userId,
+        },
+      }),
+    ]);
+
+    return {
+      data: tasks,
+      meta: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * Get all tasks for the current user
+   * Includes tasks assigned to them and tasks in their projects
+   */
+  async findUserTasks(user: { id: string; role: string }, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+
+    // If admin, return all tasks
+    if (user.role === 'ADMIN') {
+      const [tasks, total] = await this.prisma.$transaction([
+        this.prisma.task.findMany({
+          skip,
+          take: limit,
+          include: {
+            project: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            assignee: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        this.prisma.task.count(),
+      ]);
+
+      return {
+        data: tasks,
+        meta: {
+          total,
+          page,
+          limit,
+          pages: Math.ceil(total / limit),
+        },
+      };
+    }
+
+    // For regular users, return tasks assigned to them or in their projects
+    const [tasks, total] = await this.prisma.$transaction([
+      this.prisma.task.findMany({
+        where: {
+          OR: [
+            { assigneeId: user.id }, // Tasks assigned to the user
+            { project: { ownerId: user.id } }, // Tasks in projects owned by the user
+          ],
+        },
+        skip,
+        take: limit,
+        include: {
+          project: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.task.count({
+        where: {
+          OR: [
+            { assigneeId: user.id },
+            { project: { ownerId: user.id } },
+          ],
+        },
+      }),
+    ]);
+
+    return {
+      data: tasks,
+      meta: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  }
 }

@@ -28,11 +28,11 @@ export function ProjectList({
   // Loading state with skeletons
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="bg-[#111113] border border-[rgba(255,255,255,0.07)] rounded-xl p-5 animate-pulse"
+            className="w-full bg-[#111113] border border-[rgba(255,255,255,0.07)] rounded-xl p-6 animate-pulse"
           >
             <div className="h-5 bg-[#1a1a1f] rounded w-2/3 mb-2"></div>
             <div className="space-y-2 mb-4">
@@ -43,9 +43,12 @@ export function ProjectList({
               <div className="h-5 bg-[#1a1a1f] rounded w-16"></div>
               <div className="h-3 bg-[#1a1a1f] rounded w-20"></div>
             </div>
-            <div className="flex gap-2 pt-4 border-t border-[rgba(255,255,255,0.06)]">
-              <div className="h-7 bg-[#1a1a1f] rounded flex-1"></div>
-              <div className="h-7 bg-[#1a1a1f] rounded flex-1"></div>
+            <div className="flex flex-col gap-2 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+              <div className="h-8 bg-[#1a1a1f] rounded w-full"></div>
+              <div className="flex gap-2">
+                <div className="h-8 bg-[#1a1a1f] rounded flex-1"></div>
+                <div className="h-8 bg-[#1a1a1f] rounded flex-1"></div>
+              </div>
             </div>
           </div>
         ))}
@@ -92,7 +95,7 @@ export function ProjectList({
 
   // Projects grid
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {projects.map((project) => (
         <ProjectCard
           key={project.id}
